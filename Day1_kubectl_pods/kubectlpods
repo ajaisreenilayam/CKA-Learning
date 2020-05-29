@@ -1,0 +1,11 @@
+kubectl  get pods
+   10  kubectl  run nginx --image=nginx (Create nginx container in to a POD)
+   11  kubectl  get pods (List all pods)
+   14  kubectl descibe all (Describe all the details of kubectl)
+   15  kubectl describe pod nginx (Describe all the details of nginx pod)
+   16  kubectl  get pods -o wide (all the details of pods with additional column)
+   18  kubectl  delete pod webapp (Delete the pod webapp)
+   19  vim pod-definition.yml (Create Pod definition file for )
+   20  kubectl  create  -f pod-definition.yml (Create a pod using the Pod definition file)
+   22  kubectl  edit  pod redis (Directly edit the configuration file)
+   31  kubectl  apply -f pod-definition.yml (Modify the file and apply configuration once again)
