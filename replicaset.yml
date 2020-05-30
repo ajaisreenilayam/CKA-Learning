@@ -15,6 +15,7 @@ spec:
       - name: nginx-container
         image: nginx
   replicas: 3
+  #Selectors are useful for selecting a set of Pods based Pod definition 
   selector:
     matchLabels:
       type: front-end
