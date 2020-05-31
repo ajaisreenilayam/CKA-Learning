@@ -1,0 +1,26 @@
+kubectl  get services
+kubectl describe  svc
+kubectl  get deployments.apps
+kubectl describe deployments.apps  simple-webapp-deployment
+kubectl describe deployments.apps  simple-webapp-deployment  | grep image
+vim service-definition-1.yaml
+kubectl expose service nginx --port=443 --target-port=8443 --name=nginx-https -o yaml --dry-run
+kubectl  create  -f service-definition-1.yaml
+
+kubectl expose service webapp-service --port=443 --target-port=8443 --name=nginx-https -o yaml --dry-run
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: nginx-https
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    name: simple-webapp
+status:
+  loadBalancer: {}
