@@ -1,0 +1,12 @@
+
+kubectl  get namespaces (List all namespaces)
+kubectl describe namespaces  research (Describe a namespace named research)
+kubectl  create  -f redis.yml
+kubectl  run redis --image=redis -o yaml --dry-run
+kubectl run redis --image=redis --restart=Never --dry-run -o yaml > redis.yml (Restart never is mandatory to create a kind: Pod else this will create deployment)
+kubectl  create  -f redis.yml
+kubectl  get pods --namespace=finance
+kubectl  delete  pods redis --namespace=finance (Delete a Pod from specific namespace)
+kubectl  get pods --namespace=finance (List all pods from a specific namespace)
+kubectl get pods --all-namespaces | grep blue (List all pods from all namespace)
+kubectl  create namespace  ajais (Create a new namespace with ajais)
