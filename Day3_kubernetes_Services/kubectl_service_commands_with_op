@@ -24,3 +24,45 @@ spec:
     name: simple-webapp
 status:
   loadBalancer: {}
+
+##
+# if you wanted to create a service using imperative commands, you need to create a pod first
+
+kubectl run redis --image=redis --restart=Never --labels=tier=dbservice -o yaml --dry-run > redis-pod.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: dbservice
+  name: redis
+spec:
+  containers:
+  - image: redis
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+
+kubectl expose pod redis --name=redis-service  --port=6379 --target-port=6379 -o yaml --dry-run > redis-service.yml 
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: dbservice
+  name: redis-service
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    tier: dbservice
+status:
+  loadBalancer: {}
+
+This will create a yaml file
