@@ -1,0 +1,141 @@
+kubectl create role developer --namespace=development  --verb=create,list,get,update,delete --resource=pods --dry-run
+kubectl create role developer --namespace=development  --verb=create,list,get,update,delete --resource=pods --dry-run -o yaml
+kubectl create role developer --namespace=development  --verb=create,list,get,update,delete --resource=pods
+kubectl create rolebinding role-binding-john --namespace=development  --role=developer --user=john
+
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: john-developer
+spec:
+  request: $(cat john.csr | base64 | tr -d '\n')
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+EOF
+
+kubectl auth can-i list pods --as=john --namespace=development
+kubectl expose pod nginx-resolver --type=ClusterIP --port=80 --dry-run --name=nginx-resolver-service --target-port=80
+kubectl expose pod nginx-resolver --type=ClusterIP --port=80 --name=nginx-resolver-service --target-port=80
+kubectl get service
+curl http://10.101.193.83
+kubectl run --generator=run-pod/v1 --image=busybox:1.28 --rm -it -- nslookup nginx-resolver-service
+kubectl run --generator=run-pod/v1 nslookup --image=busybox:1.28 --rm -it -- nslookup nginx-resolver-service
+kubectl run --generator=run-pod/v1 test-nslookup --image=busybox:1.28 --rm -it -- nslookup nginx-resolver-service
+
+kubectl create -f busy.yaml
+kubectl exec -ti busybox -- nslookup nginx-resolver-service
+kubectl exec -ti busybox -- nslookup nginx-resolver-service > /root/nginx.svc
+
+kubectl exec -ti busybox -- nslookup 10-32-0-4.default.pod
+kubectl exec -ti busybox -- nslookup 10-32-0-4.default.pod > /root/nginx.pod
+kubectl run  nginx-critical --image=nginx --dry-run -o yaml
+kubectl run  nginx-critical --image=nginx --dry-run -o yaml > nginx-critical.yaml
+
+kubectl run  nginx-critical --image=nginx --restart=Never --dry-run -o yaml > nginx-critical.yaml
+scp nginx-critical.yaml node01:/root/
+export  ETCDCTL_API=3
+etcdctl snapshot save  /tmp/etcd-backup.db --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key --endpoints=https://127.0.0.0:2379
+
+kubectl run  redis-storage --image=redis:alpine --restart=Never --dry-run  -o yaml
+kubectl run  redis-storage --image=redis:alpine --restart=Never --dry-run  -o yaml > redis-storage.yaml
+kubectl run super-user-pod --image=busybox:1.28 --dry-run  -o yaml
+kubectl run super-user-pod --image=busybox:1.28 --dry-run  -o yaml > super-user-pod.yaml
+kubectl run nginx-deploy --image=nginx:1.16 --replicas=1 --record
+kubectl set image deployment/nginx-deploy nginx-deploy=nginx:1.17 --record  --dry-run -o yaml
+kubectl set image deployment/nginx-deploy nginx-deploy=nginx:1.17 --record
+kubectl rollout history deployment nginx-deploy
+kubectl run super-user-pod --image=busybox:1.28 --restart=Never --dry-run  -o yaml > super-user-pod.yaml
+
+
+
+master $ cat busy.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.28
+    command:
+      - sleep
+      - "3600"
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+master $ cat nginx-critical.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-critical
+  name: nginx-critical
+spec:
+  containers:
+  - image: nginx
+    name: nginx-critical
+master $ cat pvclaim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Mi
+master $ cat super-user-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: super-user-pod
+  name: super-user-pod
+spec:
+  containers:
+  - image: busybox:1.28
+    name: super-user-pod
+    command: [ "sh", "-c", "sleep 4800"]
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN", "SYS_TIME"]
+master $ cat use-pv.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: use-pv
+  name: use-pv
+spec:
+  containers:
+  - image: nginx
+    name: use-pv
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+master $ cat redis-storage.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: redis-storage
+  name: redis-storage
+spec:
+  containers:
+  - image: redis:alpine
+    name: redis-storage
+    volumeMounts:
+    - mountPath: "/data/redis"
+      name: cache-volume
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+master $
