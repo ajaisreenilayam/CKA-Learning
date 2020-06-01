@@ -1,0 +1,122 @@
+aster $ ls
+multipod.yaml  netpol.yaml  node_ips  non-root-pod.yaml  super.kubeconfig  tolerations-yaml
+master $ cat multipod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: multi-pod
+  name: multi-pod
+spec:
+  containers:
+  - image: nginx
+    name: alpha
+    env:
+    - name: name
+      value: alpha
+  - image: busybox
+    name: beta
+    command: [ "sh", "-c", "sleep 4800"]
+    env:
+    - name: name
+      value: beta
+master $ cat netpol.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-to-nptest
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      run: np-test-1
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 80
+master $ cat non-root-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: non-root-pod
+  name: non-root-pod
+spec:
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 2000
+  containers:
+  - image: redis:alpine
+    imagePullPolicy: IfNotPresent
+    name: non-root-pod
+master $ cat tolerations-yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: prod-redis
+  name: prod-redis
+spec:
+  containers:
+  - image: redis:alpine
+    name: prod-redis
+  tolerations:
+  - key: env_type
+    operator: "Equal"
+    value: production
+    effect: "NoSchedule"
+
+
+kubectl create serviceaccount pvviewer
+kubectl create clusterrole pvviewer-role --resource=PersistentVolumes --verb=list --dry-run
+kubectl create clusterrole pvviewer-role --resource=PersistentVolumes --verb=list
+kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer --dry-run
+kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer
+kubectl run pvviewer  --image=redis --generator=run-pod/v1 --serviceaccount=pvviewver --dry-run -o yaml
+kubectl run pvviewer  --image=redis --generator=run-pod/v1 --serviceaccount=pvviewer
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}'
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' > /root/node_ips
+kubectl run multi-pod --image=nginx --generator=run-pod/v1 --dry-run -o yaml
+kubectl run multi-pod --image=nginx --generator=run-pod/v1 --dry-run -o yaml > multipod.yaml
+vim multipod.yaml
+kubectl create -f multipod.yaml --dry-run
+kubectl get pods
+kubectl run non-root-pod --image=redis:alpine --generator=run-pod/v1 --dry-run -o yaml > non-root-pod.yaml
+vim non-root-pod.yaml
+kubectl create -f non-root-pod.yaml --dry-run
+kubectl create -f non-root-pod.yaml
+kubectl get pods
+kubectl get svc
+kubectl run test --image=busybox:1.28 --generator=run-pod/v1 --rm -it -- sh
+kubectl run test --image=busybox:1.28 --generator=run-pod/v1 --rm -it -- sh
+cat netpol.yaml
+kubectl taint node node01 --help
+kubectl taint node node01 env_type=production:NoSchedule
+kubectl run dev-redis --image=redis:alpine --generator=run-pod/v1 --dry-run
+kubectl get pods -o wide
+kubectl run prod-redis --image=redis:alpine --generator=run-pod/v1 --dry-run -o yaml > tolerations-yaml
+vim tolerations-yaml
+kubectl create -f tolerations-yaml --dry-run
+kubectl create -f tolerations-yaml
+kubectl  get pods -o wide
+kubectl run test1 --image=busybox:1.28 --generator=run-pod/v1
+kubectl run test2 --image=busybox:1.28 --generator=run-pod/v1
+kubectl run test3 --image=busybox:1.28 --generator=run-pod/v1
+kubectl run test4 --image=busybox:1.28 --generator=run-pod/v1
+kubectl get namespaces
+kubectl create namespace hr
+kubectl run  hr-pod --image=redis:alpine --generator=run-pod/v1 --namespace=hr --labels="environment=production,tier=frontend"  --dry-run -o yaml
+kubectl run  hr-pod --image=redis:alpine --generator=run-pod/v1 --namespace=hr --labels="environment=production,tier=frontend"
+kubectl get pods
+kubectl get pods --all-namespaces
+kubectl scale deployment nginx-deploy --replicas=3
+kubectl get deployments.
+kubectl status
+kubectl get pods -n kube-system
+cd /etc/kubernetes/manifests/
+vim kube-controller-manager.yaml
+kubectl get pods -n kube-system
+kubectl get pods
+kubectl get replicasets --all-namespaces
