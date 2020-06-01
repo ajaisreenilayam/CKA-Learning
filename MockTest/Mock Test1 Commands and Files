@@ -1,0 +1,87 @@
+kubectl run nginx-pod --image=nginx:alpine --generator=run-pod/v1 --dry-run
+kubectl run nginx-pod --image=nginx:alpine --generator=run-pod/v1
+kubectl run messaging  --image=redis:alpine --generator=run-pod/v1 --labels="tier=msg" --dry-run -o yaml
+kubectl run messaging  --image=redis:alpine --generator=run-pod/v1 --labels="tier=msg"
+kubectl run hr-web-app --image=kodekloud/webapp-color --replicas=2 --generator=deployment/apps.v1 --dry-run -o yaml
+kubectl run hr-web-app --image=kodekloud/webapp-color --replicas=2 --generator=deployment/apps.v1
+kubectl run static-busybox --image=busybox  --generator=run-pod/v1 --dry-run  -o yaml
+kubectl run static-busybox --image=busybox  --generator=run-pod/v1 --dry-run  -o yaml > static-busybox.yaml
+cp static-busybox.yaml /etc/kubernetes/manifests/
+kubectl run temp-bus --image=redis:alpine --namespace=finance --restart=Never --dry-run -o yaml
+kubectl run temp-bus --image=redis:alpine --namespace=finance --restart=Never
+kubectl get pod orange -o yaml > orgorange.yaml
+kubectl delete -f orange.yaml
+kubectl create -f orange.yaml
+kubectl get nodes -o json > json
+kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os_x43kj56.txt
+kubectl expose deployment hr-web-app --type=Nodeport --port=8080  --target-port=30082 --dry-run -o yaml > hr-web-app-service.yaml
+kubectl create -f hr-web-app-service.yaml
+kubectl get svc
+curl http://node01:30082
+
+
+  
+ master $ cat hr-web-app-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: hr-web-app-service
+  name: hr-web-app-service
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30082
+  selector:
+    run: hr-web-app
+  type: NodePort
+master $ cat orange.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: orange
+  namespace: default
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - echo The app is running! && sleep 3600
+    image: busybox:1.28
+    name: orange-container
+  initContainers:
+  - command:
+    - sh
+    - -c
+    - sleep 2;
+    image: busybox
+    name: init-myservice
+master $ cat static-busybox.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: static-busybox
+  name: static-busybox
+spec:
+  containers:
+  - image: busybox
+    name: static-busybox
+    command: [ "sh", "-c", "sleep 4800" ]
+master $ cat pv.yalm
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-analytics
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /pv/data-analytics
+master $ 
+  
