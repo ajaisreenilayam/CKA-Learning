@@ -1,0 +1,21 @@
+master $ cat sleeper.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper
+  namespace: default
+spec:
+  securityContext:
+    runAsUser: 1010
+  containers:
+  - command:
+    - sleep
+    - "4800"
+    image: ubuntu
+    name: ubuntu
+    securityContext:
+      capabilities:
+        add: ["SYS_TIME"]
+
+
+kubectl exec -it ubuntu-sleeper -- /bin/bash
