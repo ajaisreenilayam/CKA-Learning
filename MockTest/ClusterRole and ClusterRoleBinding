@@ -1,0 +1,16 @@
+LAB Cluster Roles
+
+kubectl create clusterrole --resource=nodes --verb=* --dry-run
+kubectl create clusterrole role-for-michelle --resource=nodes --verb=list --dry-run
+kubectl create clusterrole role-for-michelle --resource=nodes --verb=list --dry-run -o yaml
+kubectl create clusterrole role-for-michelle --resource=nodes --verb=list
+kubectl create clusterrolebinding role-bind-for-michelle --clusterrole=role-for-michelle --user=michelle  --dry-run
+kubectl create clusterrolebinding role-bind-for-michelle --clusterrole=role-for-michelle --user=michelle
+
+
+kubectl create clusterrole storage-admin --resource=persistentvolumes,storageclasses --verb=* --dry-run
+kubectl create clusterrole storage-admin --resource=persistentvolumes,storageclasses --verb=* --dry-run -o yaml
+kubectl create clusterrole storage-admin --resource=persistentvolumes,storageclasses --verb=*
+kubectl create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle --dry-run
+kubectl create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle --dry-run  -o yaml
+kubectl create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle
