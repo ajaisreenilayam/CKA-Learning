@@ -1,0 +1,11 @@
+kubectl create secret docker-registry private-reg-cred --docker-server=myprivateregistry.com:5000 --docker-username=dock_user --docker-password=dock_password --docker-email=dock_user@myprivateregistry.com
+
+
+In Deployment/Pod
+
+    spec:
+      containers:
+      - image: myprivateregistry.com:5000/nginx:alpine
+        name: web
+      imagePullSecrets:
+      - name: private-reg-cred
